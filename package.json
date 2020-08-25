@@ -1,0 +1,32 @@
+{
+  "name": "create-botpress-custom-module-master",
+  "version": "1.0.0",
+  "description": "CLI tool to create Botpress custom module",
+  "main": "index.js",
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "mustache": "^4.0.1",
+    "prompt": "git+https://git@github.com/flatiron/prompt.git"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhisheksimion/botpress-custom-module.git"
+  },
+  "keywords": [
+    "botpress",
+    "custom module",
+    "botpress custom module",
+    "botpress custom module tool"
+  ],
+  "author": "Abhishek Raj Simon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abhisheksimion/botpress-custom-module/issues"
+  },
+  "homepage": "https://github.com/abhisheksimion/botpress-custom-module#readme"
+}
