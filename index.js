@@ -31,14 +31,14 @@ const properties = [
         required: true
     }
 ];
-let module_name;
-let botpress_home;
+let module_name, botpress_home;
+const BOTPRESS_CONFIG_JSON_PATH = `${path.sep}out${path.sep}bp${path.sep}data${path.sep}global${path.sep}botpress.config.json`;
 
 let applicationProperties = {
     module_name: "custom-module",
     module_label: "Custom Module",
     module_description: "Some description on what this module is about",
-    botpress_home: `D:${path.sep}tools${path.sep}botpress${path.sep}source${path.sep}botpress-master-12105${path.sep}`
+    botpress_home: ""
 }
 let locationLookup = {
     api_ts : `${applicationProperties["botpress_home"]}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`,
@@ -52,6 +52,7 @@ const getModuleDetails = async () => new Promise((resolve, reject) => {
     prompt.get(properties, function (err, result) {
         if (err) { return onErr(err); }
         applicationProperties["module_name"] = module_name = result.module_name;
+        applicationProperties["module_label"] = module_name = result.module_label;
         applicationProperties["module_description"] = botpress_home = result.module_description;
         applicationProperties["botpress_home"] = botpress_home = result.botpress_home;
         resolve(result);
@@ -73,6 +74,21 @@ const copyModule = (masterModule) => {
     }
 }
 
+/**Adds the newly created module to your botpress instance */
+const stitchModule = () => {
+    try {
+        const ENCODING = 'utf-8', LOCATION = `.${path.sep}template${path.sep}`;
+        let obj = JSON.parse(fs.readFileSync(`${applicationProperties['botpress_home']}${BOTPRESS_CONFIG_JSON_PATH}`, {encoding:ENCODING, flag:'r'}));
+        if (obj.modules)
+        let result = Mustache.render(loadTemplate(LOCATION + "module_template.mustache"), applicationProperties);
+        
+        obj.modules.push(JSON.parse(result));
+        fs.writeFileSync(`${applicationProperties['botpress_home']}${BOTPRESS_CONFIG_JSON_PATH}`, JSON.stringify(obj, null, 4));
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 /**Copies and creates custom module */
 const createModule = async () => {
     try {
@@ -83,11 +99,9 @@ const createModule = async () => {
             let result = Mustache.render(loadTemplate(location + file), applicationProperties);
             filename = file.substr(0, file.indexOf('.')).replace('_', '.')
             
-            fs.writeFile(locationLookup[file.substr(0, file.indexOf('.'))]+filename, result, function (err) {
-                if (err) return console.log(err);
-                //console.log(`${locationLookup[file.substr(0, file.indexOf('.'))]+filename} file created.`);
-            });
+            fs.writeFileSync(locationLookup[file.substr(0, file.indexOf('.'))]+filename, result);
         });
+        stitchModule();
         console.log(`${applicationProperties['module_name']} created successfully at ${applicationProperties['botpress_home']}${path.sep}modules location.`);
     } catch(err) {
         console.error(err)
