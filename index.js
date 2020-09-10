@@ -28,8 +28,7 @@ const properties = [
         description: "Provide Botpres Home location (absolute path)",
         message: "Your Botpress Home location should be a clone of Botpress Github repo and should have package.json",
         type: 'string',
-        required: true,
-        default: 'D:\\tools\\test\\botpress-master'
+        required: true
     }
 ];
 let module_name, botpress_home;
