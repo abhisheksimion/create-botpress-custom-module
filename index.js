@@ -28,7 +28,8 @@ const properties = [
         description: "Provide Botpres Home location (absolute path)",
         message: "Your Botpress Home location should be a clone of Botpress Github repo and should have package.json",
         type: 'string',
-        required: true
+        required: true,
+        default: 'D:\\tools\\test\\botpress-master'
     }
 ];
 let module_name, botpress_home;
@@ -40,11 +41,18 @@ let applicationProperties = {
     module_description: "Some description on what this module is about",
     botpress_home: ""
 }
-let locationLookup = {
-    api_ts : `${applicationProperties["botpress_home"]}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`,
-    index_ts : `${applicationProperties["botpress_home"]}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`,
-    package_json : `${applicationProperties["botpress_home"]}modules${path.sep}${applicationProperties["module_name"]}${path.sep}`
-}
+const locationLookup = (type) => {
+    if (type[0] === "api_ts") {
+        return `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`;
+    } else if (type[0] === "index_ts") {
+        return `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`;
+    } else if (type[0] === "package_json") {
+        return `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}`;
+    }
+    /*"api_ts" : `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`,
+    "index_ts" : `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`,
+    "package_json" : `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}`*/
+};
 
 /**Prompt user to get mandatory details */
 const getModuleDetails = async () => new Promise((resolve, reject) => {
@@ -79,7 +87,6 @@ const stitchModule = () => {
     try {
         const ENCODING = 'utf-8', LOCATION = `.${path.sep}template${path.sep}`;
         let obj = JSON.parse(fs.readFileSync(`${applicationProperties['botpress_home']}${BOTPRESS_CONFIG_JSON_PATH}`, {encoding:ENCODING, flag:'r'}));
-        if (obj.modules)
         let result = Mustache.render(loadTemplate(LOCATION + "module_template.mustache"), applicationProperties);
         
         obj.modules.push(JSON.parse(result));
@@ -98,8 +105,7 @@ const createModule = async () => {
         fs.readdirSync(location).forEach(file => {
             let result = Mustache.render(loadTemplate(location + file), applicationProperties);
             filename = file.substr(0, file.indexOf('.')).replace('_', '.')
-            
-            fs.writeFileSync(locationLookup[file.substr(0, file.indexOf('.'))]+filename, result);
+            fs.writeFileSync(locationLookup([file.substr(0, file.indexOf('.'))])+filename, result);
         });
         stitchModule();
         console.log(`${applicationProperties['module_name']} created successfully at ${applicationProperties['botpress_home']}${path.sep}modules location.`);
