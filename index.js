@@ -47,6 +47,8 @@ const locationLookup = (type) => {
         return `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`;
     } else if (type[0] === "package_json") {
         return `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}`;
+    } else if (type[0] === "README_md") {
+        return `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}`;
     }
     /*"api_ts" : `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`,
     "index_ts" : `${applicationProperties["botpress_home"]}${path.sep}modules${path.sep}${applicationProperties["module_name"]}${path.sep}src${path.sep}backend${path.sep}`,
@@ -108,6 +110,7 @@ const createModule = async () => {
         });
         stitchModule();
         console.log(`${applicationProperties['module_name']} created successfully at ${applicationProperties['botpress_home']}${path.sep}modules location.`);
+        console.log(`Open a ternminal in the folder ${applicationProperties['botpress_home']}${path.sep}modules${path.sep}${applicationProperties['module_name']} and run 'yarn && yarn build' command`)
     } catch(err) {
         console.error(err)
     }

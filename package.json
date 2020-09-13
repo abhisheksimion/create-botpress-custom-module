@@ -4,8 +4,10 @@
   "description": "CLI tool to create Botpress custom module",
   "main": "index.js",
   "dependencies": {
+    "fs": "0.0.1-security",
     "fs-extra": "^9.0.1",
     "mustache": "^4.0.1",
+    "path": "^0.12.7",
     "prompt": "git+https://git@github.com/flatiron/prompt.git"
   },
   "devDependencies": {},
